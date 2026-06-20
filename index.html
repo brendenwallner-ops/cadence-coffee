@@ -12,12 +12,12 @@
 <meta property="og:type" content="website" />
 <meta property="og:title" content="Cadence Coffee — A neighborhood espresso bar" />
 <meta property="og:description" content="We pull every shot to spec and pour it slow. Open 7am daily." />
-<meta property="og:image" content="https://brendenwallner-ops.github.io/cadence-coffee/images/og-image.jpg" />
-<meta property="og:url" content="https://brendenwallner-ops.github.io/cadence-coffee/" />
+<meta property="og:image" content="https://cadence-coffee.vercel.app/images/og-image.jpg" />
+<meta property="og:url" content="https://cadence-coffee.vercel.app/" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Cadence Coffee — A neighborhood espresso bar" />
 <meta name="twitter:description" content="We pull every shot to spec and pour it slow. Open 7am daily." />
-<meta name="twitter:image" content="https://brendenwallner-ops.github.io/cadence-coffee/images/og-image.jpg" />
+<meta name="twitter:image" content="https://cadence-coffee.vercel.app/images/og-image.jpg" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -554,6 +554,94 @@
   .foot a { text-decoration: none; }
   .foot a:hover { color: var(--steam); }
 
+  /* ---------- Order-ahead: cart button, drawer, items ---------- */
+  .cart-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--caramel); color: var(--espresso);
+    border: 0; cursor: pointer; font: inherit; font-weight: 700; font-size: 14px;
+    padding: 9px 16px; border-radius: 999px; margin-left: 18px;
+    transition: transform 0.16s, background 0.16s;
+  }
+  .cart-btn:hover { transform: translateY(-2px); background: var(--crema); }
+  .cart-btn__count {
+    display: inline-grid; place-items: center; min-width: 20px; height: 20px;
+    padding: 0 6px; border-radius: 999px;
+    background: var(--espresso); color: var(--crema);
+    font-size: 12px; font-weight: 700;
+  }
+  .cart-btn[data-empty="true"] .cart-btn__count { display: none; }
+
+  /* "Add" affordance injected onto every orderable item */
+  .add-btn {
+    border: 1px solid var(--umber-line); background: none; color: var(--crema);
+    cursor: pointer; font: inherit; font-weight: 600; font-size: 13px;
+    padding: 6px 13px; border-radius: 999px; white-space: nowrap;
+    transition: border-color 0.16s, color 0.16s, background 0.16s;
+  }
+  .add-btn:hover { border-color: var(--crema); color: var(--espresso); background: var(--crema); }
+  .add-btn:active { transform: scale(0.96); }
+  .menu__item { align-items: center; gap: 16px; }
+  .menu__item > div:first-child { flex: 1; }
+
+  /* Drawer + overlay */
+  .cart-overlay {
+    position: fixed; inset: 0; background: rgba(10,7,5,0.6);
+    opacity: 0; pointer-events: none; transition: opacity 0.28s; z-index: 110;
+  }
+  .cart-overlay.open { opacity: 1; pointer-events: auto; }
+  .cart {
+    position: fixed; top: 0; right: 0; height: 100%; width: min(420px, 100%);
+    background: var(--umber); border-left: 1px solid var(--umber-line);
+    transform: translateX(100%); transition: transform 0.3s cubic-bezier(.4,.0,.2,1);
+    z-index: 120; display: flex; flex-direction: column;
+    box-shadow: -30px 0 60px -30px rgba(0,0,0,0.8);
+  }
+  .cart.open { transform: translateX(0); }
+  .cart__head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 24px; border-bottom: 1px solid var(--umber-line);
+  }
+  .cart__head h2 { font-family: var(--display); font-size: 22px; margin: 0; }
+  .cart__head .sub { color: var(--clay); font-size: 13px; margin: 3px 0 0; }
+  .cart__close {
+    background: none; border: 1px solid var(--umber-line); color: var(--steam);
+    width: 38px; height: 38px; border-radius: 50%; cursor: pointer; font-size: 20px;
+    transition: border-color 0.16s; flex-shrink: 0;
+  }
+  .cart__close:hover { border-color: var(--crema); }
+  .cart__items { flex: 1; overflow-y: auto; padding: 8px 24px; }
+  .cart__empty { color: var(--clay); text-align: center; padding: 60px 20px; font-size: 15px; }
+  .cart__empty span { display: block; font-size: 34px; margin-bottom: 12px; }
+  .citem {
+    display: grid; grid-template-columns: 1fr auto; gap: 6px 14px;
+    padding: 16px 0; border-bottom: 1px solid rgba(56,41,31,0.6);
+  }
+  .citem__name { font-weight: 600; font-size: 15px; }
+  .citem__price { color: var(--clay); font-size: 13px; font-family: var(--mono); }
+  .citem__line { font-family: var(--mono); font-weight: 700; color: var(--steam); text-align: right; }
+  .qty { display: inline-flex; align-items: center; gap: 0; border: 1px solid var(--umber-line); border-radius: 999px; }
+  .qty button {
+    width: 30px; height: 30px; background: none; border: 0; color: var(--steam);
+    cursor: pointer; font-size: 17px; line-height: 1; border-radius: 50%;
+  }
+  .qty button:hover { color: var(--caramel); }
+  .qty span { min-width: 24px; text-align: center; font-family: var(--mono); font-size: 14px; }
+  .cart__foot { border-top: 1px solid var(--umber-line); padding: 20px 24px calc(20px + env(safe-area-inset-bottom)); }
+  .cart__total { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .cart__total span:first-child { color: var(--clay); font-size: 14px; }
+  .cart__total b { font-family: var(--mono); font-size: 22px; }
+  .cart__pickup { color: var(--clay); font-size: 12px; margin: 0 0 16px; }
+  .cart__checkout {
+    width: 100%; border: 0; cursor: pointer; font: inherit; font-weight: 700; font-size: 15px;
+    background: var(--caramel); color: var(--espresso); padding: 14px; border-radius: 12px;
+    transition: background 0.16s, transform 0.16s;
+  }
+  .cart__checkout:hover:not(:disabled) { background: var(--crema); transform: translateY(-1px); }
+  .cart__checkout:disabled { opacity: 0.4; cursor: not-allowed; }
+  @media (max-width: 760px) {
+    .cart-btn { margin-left: auto; }
+  }
+
   /* Toast (order-ahead mock feedback) */
   .toast {
     position: fixed; bottom: 26px; left: 50%;
@@ -731,7 +819,6 @@
   <header class="nav">
     <div class="wrap nav__inner">
       <a class="brand" href="#top"><span class="brand__mark" aria-hidden="true"></span>Cadence</a>
-      <button class="nav__toggle" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
       <nav class="nav__links" aria-label="Primary">
         <a href="#bar">On the bar</a>
         <a href="#menu">Menu</a>
@@ -741,6 +828,10 @@
         <a href="#visit">Visit</a>
         <span class="nav__hours">Open now · closes <b>6pm</b></span>
       </nav>
+      <button class="cart-btn" id="cartBtn" data-empty="true" aria-label="Open your order">
+        Order ahead <span class="cart-btn__count" id="cartCount">0</span>
+      </button>
+      <button class="nav__toggle" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
     </div>
   </header>
 
@@ -1087,6 +1178,24 @@
     <span>© 2026 Cadence Coffee</span>
     <span>214 Linden Street · hello@cadencecoffee.co · <a href="#">Instagram</a></span>
   </footer>
+
+  <!-- Order-ahead drawer -->
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <aside class="cart" id="cart" aria-label="Your order" aria-hidden="true">
+    <div class="cart__head">
+      <div>
+        <h2>Your order</h2>
+        <p class="sub">Pick up at the bar · 214 Linden St</p>
+      </div>
+      <button class="cart__close" id="cartClose" aria-label="Close order">&times;</button>
+    </div>
+    <div class="cart__items" id="cartItems"></div>
+    <div class="cart__foot">
+      <div class="cart__total"><span>Subtotal</span><b id="cartTotal">$0.00</b></div>
+      <p class="cart__pickup">Ready in about <b>10 min</b>. Pay at pickup.</p>
+      <button class="cart__checkout" id="cartCheckout" disabled>Place order ahead</button>
+    </div>
+  </aside>
 
   <div class="toast" role="status" aria-live="polite"></div>
 
