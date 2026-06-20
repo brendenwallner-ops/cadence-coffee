@@ -580,8 +580,8 @@
   }
   .add-btn:hover { border-color: var(--crema); color: var(--espresso); background: var(--crema); }
   .add-btn:active { transform: scale(0.96); }
-  .menu__item { align-items: center; gap: 16px; }
-  .menu__item > div:first-child { flex: 1; }
+  /* widen the menu grid to fit the injected Add button: name | price | add */
+  .menu__item { grid-template-columns: 1fr auto auto; align-items: center; gap: 8px 16px; }
 
   /* Drawer + overlay */
   .cart-overlay {
@@ -1238,17 +1238,137 @@
       });
     });
 
-    // Order-ahead mock feedback
+    // ---------- Order-ahead cart ----------
     const toast = document.querySelector('.toast');
     let toastTimer;
-    document.querySelectorAll('.bag__add').forEach(btn => {
-      btn.addEventListener('click', () => {
-        toast.textContent = btn.dataset.bag + ' added to your bag';
-        toast.classList.add('show');
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+
+    const cart = new Map(); // id -> { name, price, qty }
+    const money = n => '$' + n.toFixed(2);
+
+    const cartEl   = document.getElementById('cart');
+    const overlay  = document.getElementById('cartOverlay');
+    const itemsEl  = document.getElementById('cartItems');
+    const countEl  = document.getElementById('cartCount');
+    const totalEl  = document.getElementById('cartTotal');
+    const checkout = document.getElementById('cartCheckout');
+    const cartBtn  = document.getElementById('cartBtn');
+
+    function totals() {
+      let count = 0, sum = 0;
+      cart.forEach(r => { count += r.qty; sum += r.qty * r.price; });
+      return { count, sum };
+    }
+    function addItem(id, name, price) {
+      const row = cart.get(id);
+      if (row) row.qty++; else cart.set(id, { name, price, qty: 1 });
+      render();
+      showToast(name + ' added to your order');
+    }
+    function setQty(id, delta) {
+      const row = cart.get(id);
+      if (!row) return;
+      row.qty += delta;
+      if (row.qty <= 0) cart.delete(id);
+      render();
+    }
+    function render() {
+      const { count, sum } = totals();
+      countEl.textContent = count;
+      cartBtn.dataset.empty = String(count === 0);
+      totalEl.textContent = money(sum);
+      checkout.disabled = count === 0;
+      if (count === 0) {
+        itemsEl.innerHTML = '<div class="cart__empty"><span>☕</span>Your order is empty.<br>Add something from the menu.</div>';
+        return;
+      }
+      itemsEl.innerHTML = '';
+      cart.forEach((r, id) => {
+        const el = document.createElement('div');
+        el.className = 'citem';
+        el.innerHTML =
+          '<div><div class="citem__name"></div><div class="citem__price"></div></div>' +
+          '<div class="citem__line"></div>' +
+          '<div class="qty"><button aria-label="Remove one">−</button>' +
+          '<span></span><button aria-label="Add one">+</button></div>';
+        el.querySelector('.citem__name').textContent = r.name;
+        el.querySelector('.citem__price').textContent = money(r.price) + ' each';
+        el.querySelector('.citem__line').textContent = money(r.price * r.qty);
+        el.querySelector('.qty span').textContent = r.qty;
+        const [minus, plus] = el.querySelectorAll('.qty button');
+        minus.addEventListener('click', () => setQty(id, -1));
+        plus.addEventListener('click', () => setQty(id, 1));
+        itemsEl.appendChild(el);
       });
+    }
+
+    function openCart() {
+      cartEl.classList.add('open');
+      overlay.classList.add('open');
+      cartEl.setAttribute('aria-hidden', 'false');
+    }
+    function closeCart() {
+      cartEl.classList.remove('open');
+      overlay.classList.remove('open');
+      cartEl.setAttribute('aria-hidden', 'true');
+    }
+    cartBtn.addEventListener('click', openCart);
+    document.getElementById('cartClose').addEventListener('click', closeCart);
+    overlay.addEventListener('click', closeCart);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCart(); });
+
+    checkout.addEventListener('click', () => {
+      const { count } = totals();
+      cart.clear();
+      render();
+      closeCart();
+      showToast(count + ' item' + (count === 1 ? '' : 's') + ' ordered — ready in ~10 min at the bar');
     });
+
+    // Make every menu drink/food item orderable
+    let uid = 0;
+    document.querySelectorAll('.menu__item').forEach(item => {
+      const nameEl = item.querySelector('.name');
+      const priceEl = item.querySelector('.price');
+      if (!nameEl || !priceEl) return;
+      const name = nameEl.textContent.trim();
+      const price = parseFloat(priceEl.textContent.replace(/[^0-9.]/g, ''));
+      if (!isFinite(price)) return;
+      const id = 'm' + (uid++);
+      const btn = document.createElement('button');
+      btn.className = 'add-btn';
+      btn.type = 'button';
+      btn.textContent = '+ Add';
+      btn.setAttribute('aria-label', 'Add ' + name + ' to your order');
+      btn.addEventListener('click', () => addItem(id, name, price));
+      item.appendChild(btn);
+    });
+
+    // Retail bags feed the same cart (relabel the existing buttons too)
+    document.querySelectorAll('.bag__add').forEach(btn => {
+      const article = btn.closest('.bag');
+      const price = parseFloat((article.querySelector('.bag__price')?.textContent || '').replace(/[^0-9.]/g, ''));
+      const name = btn.dataset.bag + ' · 250g bag';
+      const id = 'bag-' + btn.dataset.bag;
+      btn.addEventListener('click', () => addItem(id, name, price));
+    });
+
+    // Wire the dead "Order ahead" / subscription links
+    document.querySelectorAll('a[href="#"]').forEach(a => {
+      const label = a.textContent.toLowerCase();
+      if (label.includes('order ahead')) {
+        a.addEventListener('click', e => { e.preventDefault(); openCart(); });
+      } else if (label.includes('subscription')) {
+        a.addEventListener('click', e => { e.preventDefault(); showToast('Subscriptions open soon — ask us at the bar'); });
+      }
+    });
+
+    render();
 
     // Gallery lightbox
     const galleryImgs = Array.from(document.querySelectorAll('.gallery__btn img'));
