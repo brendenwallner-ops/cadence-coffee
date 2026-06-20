@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cadence Coffee — A neighborhood espresso bar</title>
+<meta name="description" content="A neighborhood espresso bar. We pull every shot to spec and pour it slow. Open 7am daily." />
+<meta name="theme-color" content="#191210" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+
+<!-- Open Graph / social share. Update CANONICAL_URL below once the site is deployed. -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Cadence Coffee — A neighborhood espresso bar" />
+<meta property="og:description" content="We pull every shot to spec and pour it slow. Open 7am daily." />
+<meta property="og:image" content="images/og-image.jpg" />
+<meta property="og:url" content="https://CANONICAL_URL/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Cadence Coffee — A neighborhood espresso bar" />
+<meta name="twitter:description" content="We pull every shot to spec and pour it slow. Open 7am daily." />
+<meta name="twitter:image" content="images/og-image.jpg" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --espresso: #191210;
+    --umber: #241a15;
+    --umber-line: #38291f;
+    --crema: #e7c49c;
+    --caramel: #cc7a33;
+    --steam: #f2ece2;
+    --clay: #9a8676;
+
+    --display: "Bricolage Grotesque", system-ui, sans-serif;
+    --body: "Hanken Grotesk", system-ui, sans-serif;
+    --mono: "Space Mono", ui-monospace, monospace;
+
+    --measure: 1140px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--espresso);
+    color: var(--steam);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  a { color: inherit; }
+
+  :focus-visible {
+    outline: 2px solid var(--crema);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: var(--measure);
+    margin-inline: auto;
+    padding-inline: 28px;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--caramel);
+    margin: 0;
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+    transition-delay: var(--d, 0ms);
+  }
+  .reveal.is-visible { opacity: 1; transform: none; }
+
+  /* ---------- Nav ---------- */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(10px);
+    background: rgba(25, 18, 16, 0.72);
+    border-bottom: 1px solid var(--umber-line);
+  }
+  .nav__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+  }
+  .brand {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 21px;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .brand__mark {
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    background: var(--caramel);
+    box-shadow: 0 0 14px 1px rgba(204, 122, 51, 0.7);
+  }
+  .nav__links {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    font-size: 15px;
+  }
+  .nav__links a { text-decoration: none; color: var(--clay); transition: color 0.18s; }
+  .nav__links a:hover { color: var(--steam); }
+  .nav__hours {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--crema);
+    border: 1px solid var(--umber-line);
+    padding: 7px 13px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .nav__hours b { color: var(--caramel); font-weight: 700; }
+  .nav__toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--umber-line);
+    border-radius: 10px;
+    width: 42px; height: 38px;
+    cursor: pointer;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+  }
+  .nav__toggle span,
+  .nav__toggle span::before,
+  .nav__toggle span::after {
+    content: "";
+    display: block;
+    width: 18px; height: 2px;
+    background: var(--steam);
+    transition: transform 0.25s, opacity 0.2s;
+  }
+  .nav__toggle span { position: relative; }
+  .nav__toggle span::before { position: absolute; top: -6px; }
+  .nav__toggle span::after { position: absolute; top: 6px; }
+  body.menu-open .nav__toggle span { background: transparent; }
+  body.menu-open .nav__toggle span::before { transform: translateY(6px) rotate(45deg); }
+  body.menu-open .nav__toggle span::after { transform: translateY(-6px) rotate(-45deg); }
+
+  /* ---------- Hero ---------- */
+  .hero { position: relative; padding-top: 92px; padding-bottom: 96px; overflow: hidden; }
+  .hero__bg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0.18;
+    filter: saturate(1.05);
+    z-index: 0;
+    pointer-events: none;
+  }
+  .hero::after {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(120% 90% at 82% 8%, rgba(204,122,51,0.12), transparent 58%),
+      linear-gradient(180deg, rgba(25,18,16,0.55) 0%, rgba(25,18,16,0.82) 60%, var(--espresso) 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
+  .hero__grid { position: relative; z-index: 2; }
+  .hero__grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .hero h1 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(46px, 7vw, 86px);
+    line-height: 0.96;
+    letter-spacing: -0.03em;
+    margin: 22px 0 0;
+  }
+  .hero h1 em { font-style: normal; color: var(--caramel); }
+  .hero p.lede {
+    font-size: 19px;
+    color: var(--clay);
+    max-width: 30ch;
+    margin: 26px 0 34px;
+  }
+  .actions { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn {
+    font-family: var(--body);
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    padding: 14px 24px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    transition: transform 0.16s, background 0.16s, border-color 0.16s;
+    display: inline-block;
+    cursor: pointer;
+  }
+  .btn--primary { background: var(--crema); color: var(--espresso); }
+  .btn--primary:hover { transform: translateY(-2px); background: #f0d4b3; }
+  .btn--ghost { border-color: var(--umber-line); color: var(--steam); background: none; }
+  .btn--ghost:hover { border-color: var(--crema); transform: translateY(-2px); }
+
+  /* ---------- Brew-spec signature panel ---------- */
+  .spec {
+    position: relative;
+    background: linear-gradient(160deg, var(--umber), #1d150f);
+    border: 1px solid var(--umber-line);
+    border-radius: 18px;
+    padding: 26px 28px 30px;
+    box-shadow: 0 30px 70px -30px rgba(0,0,0,0.8);
+  }
+  .spec__steam {
+    position: absolute;
+    top: -54px; right: 40px;
+    display: flex; gap: 13px;
+    pointer-events: none;
+  }
+  .spec__steam span {
+    width: 4px; height: 46px;
+    border-radius: 4px;
+    background: linear-gradient(to top, rgba(231,196,156,0.5), transparent);
+    transform-origin: bottom center;
+    animation: steam 3.4s ease-in-out infinite;
+  }
+  .spec__steam span:nth-child(2) { animation-delay: 0.5s; height: 56px; }
+  .spec__steam span:nth-child(3) { animation-delay: 1s; height: 40px; }
+  @keyframes steam {
+    0%   { opacity: 0; transform: translateY(8px) scaleY(0.6) skewX(0deg); }
+    35%  { opacity: 0.9; }
+    100% { opacity: 0; transform: translateY(-30px) scaleY(1.25) skewX(-9deg); }
+  }
+  .spec__head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    border-bottom: 1px solid var(--umber-line);
+    padding-bottom: 14px; margin-bottom: 6px;
+  }
+  .spec__head h2 {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin: 0;
+    color: var(--steam);
+  }
+  .spec__live {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--caramel);
+    display: flex; align-items: center; gap: 7px;
+  }
+  .spec__live::before {
+    content: ""; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--caramel);
+    box-shadow: 0 0 9px 1px var(--caramel);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+  .spec__row {
+    display: grid;
+    grid-template-columns: 84px 1fr;
+    gap: 12px;
+    font-family: var(--mono);
+    font-size: 14px;
+    padding: 11px 0;
+    border-bottom: 1px solid rgba(56,41,31,0.5);
+  }
+  .spec__row:last-child { border-bottom: 0; }
+  .spec__row dt { color: var(--clay); font-size: 12px; letter-spacing: 0.08em; align-self: center; }
+  .spec__row dd { margin: 0; color: var(--steam); }
+  .spec__row dd b { color: var(--crema); font-weight: 700; }
+
+  /* ---------- Section scaffolding ---------- */
+  .band { border-top: 1px solid var(--umber-line); padding-block: 86px; }
+  .band__head { max-width: 56ch; margin-bottom: 46px; }
+  .band__head h2 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(30px, 4.5vw, 46px);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    margin: 14px 0 0;
+  }
+  .band__head p { color: var(--clay); margin: 14px 0 0; }
+
+  /* ---------- Roasts ---------- */
+  .roasts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .roast {
+    background: var(--umber);
+    border: 1px solid var(--umber-line);
+    border-radius: 16px;
+    padding: 26px 24px 24px;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .roast:hover { transform: translateY(-5px); border-color: var(--caramel); }
+  .roast__origin {
+    font-family: var(--mono);
+    font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--caramel);
+  }
+  .roast__name {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 27px;
+    letter-spacing: -0.01em;
+    margin: 8px 0 16px;
+  }
+  .roast__notes { color: var(--clay); font-size: 15px; margin: 0 0 22px; }
+  .roast__meta {
+    display: flex; justify-content: space-between;
+    font-family: var(--mono); font-size: 12px;
+    border-top: 1px solid var(--umber-line);
+    padding-top: 15px;
+    color: var(--clay);
+  }
+  .roast__meta b { color: var(--steam); font-weight: 700; display: block; margin-top: 3px; }
+
+  /* ---------- Tasting-note marquee ---------- */
+  .ticker {
+    border-block: 1px solid var(--umber-line);
+    padding-block: 22px;
+    overflow: hidden;
+    white-space: nowrap;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+            mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  }
+  .ticker__track {
+    display: inline-flex; gap: 40px;
+    font-family: var(--display); font-weight: 500;
+    font-size: 30px; color: var(--umber-line);
+    animation: slide 32s linear infinite;
+  }
+  .ticker__track span { color: var(--clay); }
+  .ticker__track .dot { color: var(--caramel); }
+  @keyframes slide { to { transform: translateX(-50%); } }
+
+  /* ---------- Menu ---------- */
+  .menu__tabs {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-bottom: 36px;
+  }
+  .menu__tab {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--clay);
+    background: none;
+    border: 1px solid var(--umber-line);
+    border-radius: 999px;
+    padding: 9px 18px;
+    cursor: pointer;
+    transition: color 0.18s, border-color 0.18s, background 0.18s;
+  }
+  .menu__tab:hover { color: var(--steam); }
+  .menu__tab[aria-selected="true"] {
+    color: var(--espresso);
+    background: var(--crema);
+    border-color: var(--crema);
+  }
+  .menu__panel { display: none; }
+  .menu__panel.is-active { display: block; animation: fadein 0.4s ease; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .menu__list { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 56px; }
+  .menu__item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 10px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--umber-line);
+  }
+  .menu__item .name { font-weight: 600; font-size: 17px; }
+  .menu__item .desc { color: var(--clay); font-size: 14px; margin-top: 3px; }
+  .menu__item .price {
+    font-family: var(--mono);
+    font-size: 15px;
+    color: var(--crema);
+    white-space: nowrap;
+  }
+  .menu__note {
+    font-family: var(--mono); font-size: 12px; color: var(--clay);
+    margin-top: 28px; letter-spacing: 0.04em;
+  }
+
+  /* ---------- Story + day rhythm ---------- */
+  .story { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 64px; align-items: start; }
+  .story p { color: var(--clay); }
+  .story p.first { color: var(--steam); font-size: 20px; line-height: 1.5; }
+  .story__stats { display: flex; gap: 36px; margin-top: 34px; flex-wrap: wrap; }
+  .story__stats .n {
+    font-family: var(--display); font-weight: 800;
+    font-size: 38px; color: var(--crema); line-height: 1;
+  }
+  .story__stats .l {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--clay); margin-top: 8px;
+  }
+  .timeline { border-left: 2px solid var(--umber-line); padding-left: 26px; margin: 0; }
+  .timeline li { position: relative; padding: 0 0 30px; list-style: none; }
+  .timeline li:last-child { padding-bottom: 0; }
+  .timeline li::before {
+    content: "";
+    position: absolute; left: -33px; top: 4px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--espresso);
+    border: 2px solid var(--caramel);
+  }
+  .timeline .t {
+    font-family: var(--mono); font-size: 13px; font-weight: 700;
+    color: var(--caramel); letter-spacing: 0.06em;
+  }
+  .timeline h3 {
+    font-family: var(--display); font-weight: 700; font-size: 20px;
+    margin: 6px 0 4px;
+  }
+  .timeline p { margin: 0; font-size: 15px; color: var(--clay); }
+
+  /* ---------- Beans to take home ---------- */
+  .beans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .bag {
+    background: linear-gradient(165deg, var(--umber), #1d150f);
+    border: 1px solid var(--umber-line);
+    border-radius: 16px;
+    padding: 26px 24px;
+    display: flex; flex-direction: column;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .bag:hover { transform: translateY(-5px); border-color: var(--caramel); }
+  .bag__top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .bag__weight {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+    color: var(--clay); border: 1px solid var(--umber-line);
+    padding: 4px 9px; border-radius: 999px;
+  }
+  .bag__name {
+    font-family: var(--display); font-weight: 700; font-size: 24px;
+    margin: 18px 0 6px;
+  }
+  .bag__notes { color: var(--clay); font-size: 14px; margin: 0 0 22px; flex-grow: 1; }
+  .bag__buy {
+    display: flex; align-items: center; justify-content: space-between;
+    border-top: 1px solid var(--umber-line); padding-top: 18px;
+  }
+  .bag__price { font-family: var(--mono); font-size: 18px; color: var(--crema); }
+  .bag__add {
+    font-family: var(--body); font-weight: 600; font-size: 14px;
+    background: none; color: var(--steam); cursor: pointer;
+    border: 1px solid var(--umber-line); border-radius: 999px;
+    padding: 9px 16px; transition: border-color 0.18s, color 0.18s;
+  }
+  .bag__add:hover { border-color: var(--crema); color: var(--crema); }
+  .sub {
+    margin-top: 22px;
+    background: var(--umber);
+    border: 1px solid var(--umber-line);
+    border-radius: 16px;
+    padding: 30px 34px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 24px; flex-wrap: wrap;
+  }
+  .sub h3 {
+    font-family: var(--display); font-weight: 700; font-size: 24px; margin: 0 0 6px;
+  }
+  .sub p { margin: 0; color: var(--clay); max-width: 46ch; }
+
+  /* ---------- Reviews / press ---------- */
+  .quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .quote {
+    background: var(--umber);
+    border: 1px solid var(--umber-line);
+    border-radius: 16px;
+    padding: 28px 26px;
+  }
+  .quote .stars { color: var(--caramel); font-size: 14px; letter-spacing: 3px; }
+  .quote blockquote {
+    margin: 16px 0 20px; font-family: var(--display); font-weight: 500;
+    font-size: 20px; line-height: 1.4; color: var(--steam);
+  }
+  .quote cite {
+    font-style: normal; font-family: var(--mono); font-size: 12px;
+    letter-spacing: 0.06em; color: var(--clay);
+  }
+  .press {
+    margin-top: 40px; padding-top: 34px;
+    border-top: 1px solid var(--umber-line);
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: 14px 44px; justify-content: center;
+  }
+  .press span {
+    font-family: var(--display); font-weight: 700; font-size: 19px;
+    color: var(--umber-line);
+    transition: color 0.2s;
+  }
+  .press:hover span { color: var(--clay); }
+
+  /* ---------- Visit ---------- */
+  .visit { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  .visit h2 {
+    font-family: var(--display); font-weight: 700;
+    font-size: clamp(30px, 4.5vw, 46px); letter-spacing: -0.02em;
+    line-height: 1.05; margin: 14px 0 0;
+  }
+  .hours-list { list-style: none; margin: 22px 0 0; padding: 0; }
+  .hours-list li {
+    display: flex; justify-content: space-between;
+    font-family: var(--mono); font-size: 14px;
+    padding: 13px 0; border-bottom: 1px solid var(--umber-line);
+  }
+  .hours-list li span:first-child { color: var(--clay); }
+  .hours-list li.is-today span { color: var(--crema); }
+  .hours-list li.is-today span:last-child b { color: var(--caramel); }
+  .visit__card {
+    background: var(--umber);
+    border: 1px solid var(--umber-line);
+    border-radius: 18px;
+    padding: 34px;
+  }
+  .visit__card .addr {
+    font-family: var(--display); font-weight: 700;
+    font-size: 26px; line-height: 1.2; margin: 14px 0 8px;
+  }
+  .visit__card .city { color: var(--clay); margin: 0 0 26px; }
+
+  /* ---------- Footer ---------- */
+  .foot {
+    border-top: 1px solid var(--umber-line);
+    padding-block: 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 16px;
+    font-size: 14px; color: var(--clay);
+  }
+  .foot a { text-decoration: none; }
+  .foot a:hover { color: var(--steam); }
+
+  /* Toast (order-ahead mock feedback) */
+  .toast {
+    position: fixed; bottom: 26px; left: 50%;
+    transform: translateX(-50%) translateY(40px);
+    background: var(--crema); color: var(--espresso);
+    font-weight: 600; font-size: 14px;
+    padding: 13px 22px; border-radius: 999px;
+    box-shadow: 0 18px 40px -16px rgba(0,0,0,0.7);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ---------- Imagery: roast thumbnails ---------- */
+  .roast__img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: 11px;
+    border: 1px solid var(--umber-line);
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  /* ---------- Imagery: story roaster shot ---------- */
+  .story__img {
+    width: 100%;
+    aspect-ratio: 5 / 3;
+    object-fit: cover;
+    border-radius: 14px;
+    border: 1px solid var(--umber-line);
+    margin-bottom: 30px;
+    display: block;
+  }
+
+  /* ---------- Gallery ---------- */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 178px;
+    gap: 14px;
+  }
+  .gallery figure {
+    margin: 0;
+    overflow: hidden;
+    border-radius: 14px;
+    border: 1px solid var(--umber-line);
+    background: var(--umber);
+  }
+  .gallery img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.55s ease;
+  }
+  .gallery figure:hover img { transform: scale(1.06); }
+  .gallery .wide { grid-column: span 2; }
+  .gallery .tall { grid-row: span 2; }
+  .gallery__btn {
+    display: block; width: 100%; height: 100%;
+    padding: 0; margin: 0; border: 0; cursor: zoom-in;
+    background: none;
+  }
+
+  /* ---------- Lightbox ---------- */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    padding: 28px;
+    background: rgba(16, 11, 9, 0.92);
+    backdrop-filter: blur(6px);
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s;
+  }
+  .lightbox.open { opacity: 1; visibility: visible; }
+  .lightbox img {
+    max-width: min(1000px, 92vw);
+    max-height: 86vh;
+    border-radius: 12px;
+    border: 1px solid var(--umber-line);
+    box-shadow: 0 30px 80px -20px rgba(0,0,0,0.9);
+    transform: scale(0.97);
+    transition: transform 0.3s ease;
+  }
+  .lightbox.open img { transform: scale(1); }
+  .lightbox__cap {
+    position: absolute; bottom: 22px; left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--mono); font-size: 12px;
+    letter-spacing: 0.04em; color: var(--clay);
+    text-align: center; max-width: 80vw;
+  }
+  .lightbox__btn {
+    position: absolute;
+    background: rgba(36, 26, 21, 0.7);
+    border: 1px solid var(--umber-line);
+    color: var(--steam);
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    font-size: 22px; line-height: 1;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.18s, border-color 0.18s;
+  }
+  .lightbox__btn:hover { background: var(--umber); border-color: var(--crema); }
+  .lightbox__close { top: 22px; right: 22px; }
+  .lightbox__nav { top: 50%; transform: translateY(-50%); }
+  .lightbox__prev { left: 22px; }
+  .lightbox__next { right: 22px; }
+  @media (max-width: 880px) {
+    .lightbox__nav { top: auto; bottom: 22px; transform: none; }
+    .lightbox__prev { left: 50%; margin-left: -56px; }
+    .lightbox__next { right: 50%; margin-right: -56px; }
+    .lightbox__cap { bottom: 80px; }
+  }
+
+  /* SVG coffee mark accent */
+  .mark {
+    width: 30px; height: 30px;
+    color: var(--caramel);
+    margin-bottom: 4px;
+  }
+
+  /* ---------- Imagery: visit interior ---------- */
+  .visit__img {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid var(--umber-line);
+    margin-bottom: 24px;
+    display: block;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 880px) {
+    .hero__grid, .visit, .story { grid-template-columns: 1fr; }
+    .story { gap: 44px; }
+    .hero { padding-top: 56px; padding-bottom: 64px; }
+    .spec__steam { right: 28px; }
+    .roasts, .beans, .quotes { grid-template-columns: 1fr; }
+    .menu__list { grid-template-columns: 1fr; gap: 0; }
+    .gallery { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 150px; }
+    .gallery .tall { grid-row: span 1; }
+
+    .nav__toggle { display: flex; }
+    .nav__links {
+      position: fixed;
+      inset: 70px 0 auto 0;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      background: var(--espresso);
+      border-bottom: 1px solid var(--umber-line);
+      padding: 8px 28px 22px;
+      transform: translateY(-120%);
+      transition: transform 0.3s ease;
+      font-size: 18px;
+    }
+    body.menu-open .nav__links { transform: translateY(0); }
+    .nav__links a { padding: 14px 0; width: 100%; border-bottom: 1px solid var(--umber-line); }
+    .nav__hours { margin-top: 16px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; scroll-behavior: auto; transition: none !important; }
+    .spec__steam { display: none; }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+  <header class="nav">
+    <div class="wrap nav__inner">
+      <a class="brand" href="#top"><span class="brand__mark" aria-hidden="true"></span>Cadence</a>
+      <button class="nav__toggle" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
+      <nav class="nav__links" aria-label="Primary">
+        <a href="#bar">On the bar</a>
+        <a href="#menu">Menu</a>
+        <a href="#story">Our story</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#beans">Beans</a>
+        <a href="#visit">Visit</a>
+        <span class="nav__hours">Open now · closes <b>6pm</b></span>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- HERO -->
+    <section class="hero">
+      <img class="hero__bg" src="images/hero.jpg" alt="" aria-hidden="true" fetchpriority="high" decoding="async" />
+      <div class="wrap hero__grid">
+        <div>
+          <p class="eyebrow">Neighborhood espresso bar · Est. 2019</p>
+          <h1>Coffee, kept to a <em>steady tempo.</em></h1>
+          <p class="lede">We pull every shot to spec, pour it slow, and serve it the same way each morning. No theatre — just a good cup, on time.</p>
+          <div class="actions">
+            <a class="btn btn--primary" href="#menu">See the menu</a>
+            <a class="btn btn--ghost" href="#visit">Find the bar</a>
+          </div>
+        </div>
+
+        <!-- SIGNATURE: today's brew-spec readout -->
+        <aside class="spec" aria-label="Today's featured espresso">
+          <div class="spec__steam" aria-hidden="true"><span></span><span></span><span></span></div>
+          <div class="spec__head">
+            <h2>Today on bar</h2>
+            <span class="spec__live">Dialed in</span>
+          </div>
+          <dl>
+            <div class="spec__row"><dt>Origin</dt><dd>Huila, <b>Colombia</b></dd></div>
+            <div class="spec__row"><dt>Process</dt><dd>Washed</dd></div>
+            <div class="spec__row"><dt>Roast</dt><dd>Medium-light</dd></div>
+            <div class="spec__row"><dt>Recipe</dt><dd><b>18g</b> in → <b>38g</b> out</dd></div>
+            <div class="spec__row"><dt>Pull</dt><dd>29 seconds</dd></div>
+            <div class="spec__row"><dt>Notes</dt><dd>Cherry · Cocoa · Cane sugar</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </section>
+
+    <!-- TASTING-NOTE TICKER -->
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker__track">
+        <span>Stone fruit</span><span class="dot">·</span><span>Dark chocolate</span><span class="dot">·</span><span>Brown sugar</span><span class="dot">·</span><span>Citrus peel</span><span class="dot">·</span><span>Toasted almond</span><span class="dot">·</span><span>Honey</span><span class="dot">·</span>
+        <span>Stone fruit</span><span class="dot">·</span><span>Dark chocolate</span><span class="dot">·</span><span>Brown sugar</span><span class="dot">·</span><span>Citrus peel</span><span class="dot">·</span><span>Toasted almond</span><span class="dot">·</span><span>Honey</span><span class="dot">·</span>
+      </div>
+    </div>
+
+    <!-- ON THE BAR -->
+    <section class="band" id="bar">
+      <div class="wrap">
+        <div class="band__head reveal">
+          <p class="eyebrow">On the bar this week</p>
+          <h2>Three roasts, each dialed for how you drink it.</h2>
+          <p>We rotate single origins weekly and tune each one for a specific cup — so the espresso, the filter, and the milk drink all taste like they were meant to.</p>
+        </div>
+
+        <div class="roasts">
+          <article class="roast reveal">
+            <img class="roast__img" src="images/roast-regular.jpg" alt="A milk-based espresso drink with latte art" loading="lazy" decoding="async" />
+            <p class="roast__origin">Colombia · Espresso</p>
+            <h3 class="roast__name">The Regular</h3>
+            <p class="roast__notes">Our everyday shot. Round and sweet, with enough body to stand up to milk.</p>
+            <div class="roast__meta">
+              <span>Roast<b>Medium-light</b></span>
+              <span>Ratio<b>1:2.1</b></span>
+            </div>
+          </article>
+
+          <article class="roast reveal" style="--d:90ms">
+            <img class="roast__img" src="images/roast-slowpour.jpg" alt="A pour-over filter coffee being brewed" loading="lazy" decoding="async" />
+            <p class="roast__origin">Ethiopia · Filter</p>
+            <h3 class="roast__name">Slow Pour</h3>
+            <p class="roast__notes">A bright, floral batch brew for drinking black. Jasmine up front, citrus on the finish.</p>
+            <div class="roast__meta">
+              <span>Roast<b>Light</b></span>
+              <span>Brew<b>Pour-over</b></span>
+            </div>
+          </article>
+
+          <article class="roast reveal" style="--d:180ms">
+            <img class="roast__img" src="images/roast-afterhours.jpg" alt="A cup of coffee on a saucer" loading="lazy" decoding="async" />
+            <p class="roast__origin">Guatemala · Decaf</p>
+            <h3 class="roast__name">After Hours</h3>
+            <p class="roast__notes">Sugarcane-decaffeinated and roasted for cocoa and caramel. The 4pm cup, no compromise.</p>
+            <div class="roast__meta">
+              <span>Roast<b>Medium</b></span>
+              <span>Caffeine<b>Decaf</b></span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- MENU -->
+    <section class="band" id="menu">
+      <div class="wrap">
+        <div class="band__head reveal">
+          <p class="eyebrow">The menu</p>
+          <h2>Everything we make, start to finish.</h2>
+          <p>Whole milk is standard; oat is on the house. Sizes are one and done — we pour the size each drink tastes best at.</p>
+        </div>
+
+        <div class="reveal">
+          <div class="menu__tabs" role="tablist" aria-label="Menu categories">
+            <button class="menu__tab" role="tab" aria-selected="true" aria-controls="panel-espresso" id="tab-espresso">Espresso</button>
+            <button class="menu__tab" role="tab" aria-selected="false" aria-controls="panel-filter" id="tab-filter">Filter &amp; cold</button>
+            <button class="menu__tab" role="tab" aria-selected="false" aria-controls="panel-other" id="tab-other">Not coffee</button>
+            <button class="menu__tab" role="tab" aria-selected="false" aria-controls="panel-food" id="tab-food">From the case</button>
+          </div>
+
+          <div class="menu__panel is-active" id="panel-espresso" role="tabpanel" aria-labelledby="tab-espresso">
+            <div class="menu__list">
+              <div class="menu__item"><div><div class="name">Espresso</div><div class="desc">A double, pulled to today's spec</div></div><div class="price">3.25</div></div>
+              <div class="menu__item"><div><div class="name">Macchiato</div><div class="desc">Espresso, a spoon of foam</div></div><div class="price">3.75</div></div>
+              <div class="menu__item"><div><div class="name">Cortado</div><div class="desc">Equal parts, warm not hot</div></div><div class="price">4.25</div></div>
+              <div class="menu__item"><div><div class="name">Flat white</div><div class="desc">Six ounces, velvet milk</div></div><div class="price">4.75</div></div>
+              <div class="menu__item"><div><div class="name">Latte</div><div class="desc">Add vanilla or cinnamon, no charge</div></div><div class="price">5.00</div></div>
+              <div class="menu__item"><div><div class="name">Cappuccino</div><div class="desc">Dry, the traditional way</div></div><div class="price">4.75</div></div>
+            </div>
+            <p class="menu__note">Syrups made in-house · Decaf swaps free on any drink</p>
+          </div>
+
+          <div class="menu__panel" id="panel-filter" role="tabpanel" aria-labelledby="tab-filter" hidden>
+            <div class="menu__list">
+              <div class="menu__item"><div><div class="name">Batch brew</div><div class="desc">Fresh every 45 minutes</div></div><div class="price">3.50</div></div>
+              <div class="menu__item"><div><div class="name">Pour-over</div><div class="desc">Single origin, brewed to order</div></div><div class="price">5.50</div></div>
+              <div class="menu__item"><div><div class="name">Cold brew</div><div class="desc">Steeped 18 hours, served over ice</div></div><div class="price">4.75</div></div>
+              <div class="menu__item"><div><div class="name">Iced latte</div><div class="desc">Espresso, cold milk, no shortcuts</div></div><div class="price">5.25</div></div>
+            </div>
+            <p class="menu__note">Ask the bar what's brewing — the pour-over changes daily</p>
+          </div>
+
+          <div class="menu__panel" id="panel-other" role="tabpanel" aria-labelledby="tab-other" hidden>
+            <div class="menu__list">
+              <div class="menu__item"><div><div class="name">Matcha latte</div><div class="desc">Ceremonial grade, whisked to order</div></div><div class="price">5.25</div></div>
+              <div class="menu__item"><div><div class="name">Hot chocolate</div><div class="desc">70% dark, real ganache</div></div><div class="price">4.50</div></div>
+              <div class="menu__item"><div><div class="name">Chai latte</div><div class="desc">Spiced in-house, never from syrup</div></div><div class="price">4.75</div></div>
+              <div class="menu__item"><div><div class="name">Loose-leaf tea</div><div class="desc">Black, green, or herbal</div></div><div class="price">3.50</div></div>
+            </div>
+            <p class="menu__note">Caffeine-free options marked at the bar</p>
+          </div>
+
+          <div class="menu__panel" id="panel-food" role="tabpanel" aria-labelledby="tab-food" hidden>
+            <div class="menu__list">
+              <div class="menu__item"><div><div class="name">Butter croissant</div><div class="desc">Laminated next door, baked at six</div></div><div class="price">4.00</div></div>
+              <div class="menu__item"><div><div class="name">Almond croissant</div><div class="desc">Frangipane, toasted almonds</div></div><div class="price">4.75</div></div>
+              <div class="menu__item"><div><div class="name">Banana bread</div><div class="desc">Toasted, with cultured butter</div></div><div class="price">4.25</div></div>
+              <div class="menu__item"><div><div class="name">Seasonal galette</div><div class="desc">Ask what fruit came in this week</div></div><div class="price">5.50</div></div>
+            </div>
+            <p class="menu__note">Baked fresh daily — when it's gone, it's gone</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STORY + DAY RHYTHM -->
+    <section class="band" id="story">
+      <div class="wrap story">
+        <div class="reveal">
+          <p class="eyebrow">Our story</p>
+          <h2 class="band__head" style="margin:14px 0 22px;font-family:var(--display);font-weight:700;font-size:clamp(30px,4.5vw,46px);letter-spacing:-0.02em;line-height:1.05;">We opened to keep one good habit.</h2>
+          <p class="first">Cadence started in 2019 with a six-group lever machine, a borrowed grinder, and a simple idea: the same careful cup, at the same time, every day.</p>
+          <p>We roast a few miles away in small batches and bring it to the bar within a week of the roast date. Our baristas weigh every shot and taste the batch brew each hour, because consistency isn't boring — it's the whole point. A regular order should taste like it did yesterday.</p>
+          <div class="story__stats">
+            <div><div class="n">6am</div><div class="l">Roast starts</div></div>
+            <div><div class="n">7&nbsp;day</div><div class="l">Max off-roast</div></div>
+            <div><div class="n">1.2k</div><div class="l">Cups a week</div></div>
+          </div>
+        </div>
+
+        <div class="reveal" style="--d:120ms">
+          <img class="story__img" src="images/story-roastery.jpg" alt="Freshly roasted coffee beans cooling at the roastery" loading="lazy" decoding="async" />
+          <ol class="timeline">
+            <li>
+              <div class="t">06:00</div>
+              <h3>The roaster warms up</h3>
+              <p>Green coffee goes in, the day's batch comes out, and we cup it before anyone's awake.</p>
+            </li>
+            <li>
+              <div class="t">07:00</div>
+              <h3>Doors open</h3>
+              <p>First shots dialed in, batch brew tasting sweet, pastries still warm from next door.</p>
+            </li>
+            <li>
+              <div class="t">12:30</div>
+              <h3>The midday recalibration</h3>
+              <p>As the room warms, the grind shifts. We re-dial so the 1pm shot matches the 8am one.</p>
+            </li>
+            <li>
+              <div class="t">16:00</div>
+              <h3>After Hours goes on</h3>
+              <p>Decaf takes the second hopper for everyone who wants the ritual without the buzz.</p>
+            </li>
+            <li>
+              <div class="t">18:00</div>
+              <h3>We wipe down and reset</h3>
+              <p>Machine flushed, hoppers emptied, ready to do the exact same thing tomorrow.</p>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section class="band" id="gallery">
+      <div class="wrap">
+        <div class="band__head reveal">
+          <svg class="mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 11h12v3a5 5 0 0 1-5 5H10a5 5 0 0 1-5-5z" />
+            <path d="M17 11h2.5a2.5 2.5 0 0 1 0 5H17" />
+            <path d="M8 4c-.6.8-.6 1.7 0 2.5M12 4c-.6.8-.6 1.7 0 2.5M16 4c-.6.8-.6 1.7 0 2.5" />
+          </svg>
+          <p class="eyebrow">The room</p>
+          <h2>A small bar that smells like roast day.</h2>
+          <p>Concrete, warm wood, and a six-group lever you can hear from the door. Here's the corner we open up every morning.</p>
+        </div>
+
+        <div class="gallery reveal">
+          <figure class="wide"><button class="gallery__btn" type="button"><img src="images/gallery-interior.jpg" alt="The café interior, warm light over the bar" loading="lazy" decoding="async" /></button></figure>
+          <figure class="tall"><button class="gallery__btn" type="button"><img src="images/gallery-flatwhite.jpg" alt="A flat white seen from above" loading="lazy" decoding="async" /></button></figure>
+          <figure><button class="gallery__btn" type="button"><img src="images/gallery-beans.jpg" alt="Roasted coffee beans up close" loading="lazy" decoding="async" /></button></figure>
+          <figure><button class="gallery__btn" type="button"><img src="images/gallery-pour.jpg" alt="Hot water poured over a filter" loading="lazy" decoding="async" /></button></figure>
+          <figure><button class="gallery__btn" type="button"><img src="images/gallery-guests.jpg" alt="Guests at a table in the café" loading="lazy" decoding="async" /></button></figure>
+          <figure class="wide"><button class="gallery__btn" type="button"><img src="images/gallery-cup.jpg" alt="A coffee cup resting on a wooden table" loading="lazy" decoding="async" /></button></figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- BEANS TO TAKE HOME -->
+    <section class="band" id="beans">
+      <div class="wrap">
+        <div class="band__head reveal">
+          <p class="eyebrow">Beans to take home</p>
+          <h2>The bar, on your kitchen counter.</h2>
+          <p>Same coffee we pull here, bagged within a week of roasting. Whole bean or ground to your setup — just tell us at checkout.</p>
+        </div>
+
+        <div class="beans">
+          <article class="bag reveal">
+            <div class="bag__top">
+              <p class="eyebrow" style="color:var(--caramel)">Colombia</p>
+              <span class="bag__weight">250g</span>
+            </div>
+            <h3 class="bag__name">The Regular</h3>
+            <p class="bag__notes">Cherry, cocoa, cane sugar. The everyday bag — forgiving on any machine.</p>
+            <div class="bag__buy"><span class="bag__price">$18</span><button class="bag__add" data-bag="The Regular">Add to bag</button></div>
+          </article>
+
+          <article class="bag reveal" style="--d:90ms">
+            <div class="bag__top">
+              <p class="eyebrow" style="color:var(--caramel)">Ethiopia</p>
+              <span class="bag__weight">250g</span>
+            </div>
+            <h3 class="bag__name">Slow Pour</h3>
+            <p class="bag__notes">Jasmine, lemon, black tea. Light and bright — best brewed as filter.</p>
+            <div class="bag__buy"><span class="bag__price">$21</span><button class="bag__add" data-bag="Slow Pour">Add to bag</button></div>
+          </article>
+
+          <article class="bag reveal" style="--d:180ms">
+            <div class="bag__top">
+              <p class="eyebrow" style="color:var(--caramel)">Guatemala</p>
+              <span class="bag__weight">250g</span>
+            </div>
+            <h3 class="bag__name">After Hours</h3>
+            <p class="bag__notes">Cocoa, caramel, toasted almond. Sugarcane decaf that earns its place.</p>
+            <div class="bag__buy"><span class="bag__price">$19</span><button class="bag__add" data-bag="After Hours">Add to bag</button></div>
+          </article>
+        </div>
+
+        <div class="sub reveal">
+          <div>
+            <h3>Set a standing order</h3>
+            <p>Pick a roast and a cadence — weekly, fortnightly, monthly. We roast it the day before it ships, and you save 15% on every bag.</p>
+          </div>
+          <a class="btn btn--primary" href="#">Start a subscription</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- REVIEWS / PRESS -->
+    <section class="band" id="reviews">
+      <div class="wrap">
+        <div class="band__head reveal">
+          <p class="eyebrow">From the regulars</p>
+          <h2>People keep coming back for the same cup.</h2>
+        </div>
+
+        <div class="quotes">
+          <figure class="quote reveal">
+            <div class="stars" aria-label="Five stars">★★★★★</div>
+            <blockquote>"My flat white tastes identical every single morning. I didn't know how rare that was until I traveled."</blockquote>
+            <cite>— Dana R., five-day-a-week regular</cite>
+          </figure>
+          <figure class="quote reveal" style="--d:90ms">
+            <div class="stars" aria-label="Five stars">★★★★★</div>
+            <blockquote>"They told me which bag to buy for my cheap home machine and they were right. No upsell, just help."</blockquote>
+            <cite>— Marcus T., subscriber since 2021</cite>
+          </figure>
+          <figure class="quote reveal" style="--d:180ms">
+            <div class="stars" aria-label="Five stars">★★★★★</div>
+            <blockquote>"The decaf is genuinely good, which I've never been able to say anywhere else. I'm an After Hours convert."</blockquote>
+            <cite>— Priya S., evening regular</cite>
+          </figure>
+        </div>
+
+        <div class="press reveal" aria-label="Featured in">
+          <span>The Local Weekly</span>
+          <span>Brew Guide</span>
+          <span>City Eats</span>
+          <span>Neighborhood Mag</span>
+          <span>Roast Journal</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- VISIT -->
+    <section class="band" id="visit">
+      <div class="wrap visit">
+        <div class="reveal">
+          <p class="eyebrow">Come by</p>
+          <h2>Pull up a stool.</h2>
+          <ul class="hours-list">
+            <li><span>Mon — Thu</span><span>7:00 — 18:00</span></li>
+            <li class="is-today"><span>Friday</span><span><b>7:00 — 18:00</b></span></li>
+            <li><span>Saturday</span><span>8:00 — 17:00</span></li>
+            <li><span>Sunday</span><span>8:00 — 15:00</span></li>
+          </ul>
+        </div>
+
+        <div class="visit__card reveal" style="--d:120ms">
+          <img class="visit__img" src="images/visit-bar.jpg" alt="The corner espresso bar with seating" loading="lazy" decoding="async" />
+          <p class="eyebrow">The bar</p>
+          <p class="addr">214 Linden Street</p>
+          <p class="city">Corner of 6th · Street parking out front</p>
+          <div class="actions">
+            <a class="btn btn--primary" href="#">Get directions</a>
+            <a class="btn btn--ghost" href="#">Order ahead</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot wrap">
+    <span>© 2026 Cadence Coffee</span>
+    <span>214 Linden Street · hello@cadencecoffee.co · <a href="#">Instagram</a></span>
+  </footer>
+
+  <div class="toast" role="status" aria-live="polite"></div>
+
+  <!-- Gallery lightbox -->
+  <div class="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer" aria-hidden="true">
+    <button class="lightbox__btn lightbox__close" aria-label="Close">&times;</button>
+    <button class="lightbox__btn lightbox__nav lightbox__prev" aria-label="Previous photo">&#8249;</button>
+    <img alt="" />
+    <button class="lightbox__btn lightbox__nav lightbox__next" aria-label="Next photo">&#8250;</button>
+    <p class="lightbox__cap"></p>
+  </div>
+
+  <script>
+    // Mobile nav
+    const toggle = document.querySelector('.nav__toggle');
+    toggle.addEventListener('click', () => {
+      const open = document.body.classList.toggle('menu-open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.querySelectorAll('.nav__links a').forEach(a =>
+      a.addEventListener('click', () => {
+        document.body.classList.remove('menu-open');
+        toggle.setAttribute('aria-expanded', 'false');
+      })
+    );
+
+    // Menu tabs
+    const tabs = document.querySelectorAll('.menu__tab');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.setAttribute('aria-selected', 'false'));
+        tab.setAttribute('aria-selected', 'true');
+        document.querySelectorAll('.menu__panel').forEach(p => {
+          p.classList.remove('is-active');
+          p.hidden = true;
+        });
+        const panel = document.getElementById(tab.getAttribute('aria-controls'));
+        panel.hidden = false;
+        panel.classList.add('is-active');
+      });
+    });
+
+    // Order-ahead mock feedback
+    const toast = document.querySelector('.toast');
+    let toastTimer;
+    document.querySelectorAll('.bag__add').forEach(btn => {
+      btn.addEventListener('click', () => {
+        toast.textContent = btn.dataset.bag + ' added to your bag';
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+      });
+    });
+
+    // Gallery lightbox
+    const galleryImgs = Array.from(document.querySelectorAll('.gallery__btn img'));
+    const lb = document.querySelector('.lightbox');
+    const lbImg = lb.querySelector('img');
+    const lbCap = lb.querySelector('.lightbox__cap');
+    let lbIndex = 0, lastFocus = null;
+
+    function showLb(i) {
+      lbIndex = (i + galleryImgs.length) % galleryImgs.length;
+      const src = galleryImgs[lbIndex];
+      lbImg.src = src.src;
+      lbImg.alt = src.alt;
+      lbCap.textContent = src.alt;
+    }
+    function openLb(i) {
+      lastFocus = document.activeElement;
+      showLb(i);
+      lb.classList.add('open');
+      lb.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      lb.querySelector('.lightbox__close').focus();
+    }
+    function closeLb() {
+      lb.classList.remove('open');
+      lb.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      if (lastFocus) lastFocus.focus();
+    }
+
+    document.querySelectorAll('.gallery__btn').forEach((btn, i) =>
+      btn.addEventListener('click', () => openLb(i))
+    );
+    lb.querySelector('.lightbox__close').addEventListener('click', closeLb);
+    lb.querySelector('.lightbox__prev').addEventListener('click', () => showLb(lbIndex - 1));
+    lb.querySelector('.lightbox__next').addEventListener('click', () => showLb(lbIndex + 1));
+    lb.addEventListener('click', (e) => { if (e.target === lb) closeLb(); });
+    document.addEventListener('keydown', (e) => {
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'Escape') closeLb();
+      if (e.key === 'ArrowLeft') showLb(lbIndex - 1);
+      if (e.key === 'ArrowRight') showLb(lbIndex + 1);
+    });
+
+    // Scroll reveals
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+      document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    } else {
+      document.querySelectorAll('.reveal').forEach(el => el.classList.add('is-visible'));
+    }
+  </script>
+
+</body>
+</html>
