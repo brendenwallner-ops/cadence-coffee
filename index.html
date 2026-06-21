@@ -570,6 +570,7 @@
     font-size: 12px; font-weight: 700;
   }
   .cart-btn[data-empty="true"] .cart-btn__count { display: none; }
+  .cart-btn__icon { display: none; }
 
   /* "Add" affordance injected onto every orderable item */
   .add-btn {
@@ -638,9 +639,6 @@
   }
   .cart__checkout:hover:not(:disabled) { background: var(--crema); transform: translateY(-1px); }
   .cart__checkout:disabled { opacity: 0.4; cursor: not-allowed; }
-  @media (max-width: 760px) {
-    .cart-btn { margin-left: auto; }
-  }
 
   /* Toast (order-ahead mock feedback) */
   .toast {
@@ -788,7 +786,11 @@
     .gallery { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 150px; }
     .gallery .tall { grid-row: span 1; }
 
-    .nav__toggle { display: flex; }
+    .nav__toggle { display: flex; margin-left: 12px; }
+    /* compact the cart button so the brand + hamburger always fit */
+    .cart-btn { margin-left: auto; padding: 9px 13px; gap: 7px; }
+    .cart-btn__icon { display: block; }
+    .cart-btn__label { display: none; }
     .nav__links {
       position: fixed;
       inset: 70px 0 auto 0;
@@ -829,7 +831,9 @@
         <span class="nav__hours">Open now · closes <b>6pm</b></span>
       </nav>
       <button class="cart-btn" id="cartBtn" data-empty="true" aria-label="Open your order">
-        Order ahead <span class="cart-btn__count" id="cartCount">0</span>
+        <svg class="cart-btn__icon" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg>
+        <span class="cart-btn__label">Order ahead</span>
+        <span class="cart-btn__count" id="cartCount">0</span>
       </button>
       <button class="nav__toggle" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
     </div>
