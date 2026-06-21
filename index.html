@@ -573,16 +573,30 @@
   .cart-btn__icon { display: none; }
 
   /* "Add" affordance injected onto every orderable item */
+  /* "+ Add" pill — a visual affordance only; the whole row is the tap target */
   .add-btn {
+    display: inline-flex; align-items: center; justify-content: center;
     border: 1px solid var(--umber-line); background: none; color: var(--crema);
-    cursor: pointer; font: inherit; font-weight: 600; font-size: 13px;
+    pointer-events: none; font: inherit; font-weight: 600; font-size: 13px;
     padding: 6px 13px; border-radius: 999px; white-space: nowrap;
     transition: border-color 0.16s, color 0.16s, background 0.16s;
   }
-  .add-btn:hover { border-color: var(--crema); color: var(--espresso); background: var(--crema); }
-  .add-btn:active { transform: scale(0.96); }
-  /* widen the menu grid to fit the injected Add button: name | price | add */
+  /* once it's in the order, the pill fills + shows the count */
+  .add-btn[data-qty]:not([data-qty="0"]),
+  .bag__add[data-qty]:not([data-qty="0"]) {
+    background: var(--caramel); color: var(--espresso); border-color: var(--caramel);
+  }
+  /* widen the menu grid to fit the Add pill: name | price | add */
   .menu__item { grid-template-columns: 1fr auto auto; align-items: center; gap: 8px 16px; }
+  /* the whole menu row is tappable */
+  .menu__item--order {
+    cursor: pointer; border-radius: 10px;
+    padding-inline: 12px; margin-inline: -12px;
+    transition: background 0.15s;
+  }
+  .menu__item--order:hover { background: rgba(231, 196, 156, 0.06); }
+  .menu__item--order:hover .add-btn { background: var(--crema); color: var(--espresso); border-color: var(--crema); }
+  .menu__item--order:active { background: rgba(231, 196, 156, 0.12); }
 
   /* Drawer + overlay */
   .cart-overlay {
@@ -1254,6 +1268,8 @@
 
     const cart = new Map(); // id -> { name, price, qty }
     const money = n => '$' + n.toFixed(2);
+    const STORE_KEY = 'cadence-order-v1';
+    const controls = []; // { id, btn, label } — menu rows + bags, kept in sync with the cart
 
     const cartEl   = document.getElementById('cart');
     const overlay  = document.getElementById('cartOverlay');
@@ -1263,16 +1279,29 @@
     const checkout = document.getElementById('cartCheckout');
     const cartBtn  = document.getElementById('cartBtn');
 
+    function save() {
+      try { localStorage.setItem(STORE_KEY, JSON.stringify([...cart.entries()])); } catch (e) {}
+    }
+    function loadSaved() {
+      try {
+        const raw = localStorage.getItem(STORE_KEY);
+        if (raw) JSON.parse(raw).forEach(([id, r]) => { if (r && r.qty > 0) cart.set(id, r); });
+      } catch (e) {}
+    }
+
     function totals() {
       let count = 0, sum = 0;
       cart.forEach(r => { count += r.qty; sum += r.qty * r.price; });
       return { count, sum };
     }
+    function qtyOf(id) { return cart.has(id) ? cart.get(id).qty : 0; }
+
     function addItem(id, name, price) {
       const row = cart.get(id);
       if (row) row.qty++; else cart.set(id, { name, price, qty: 1 });
       render();
-      showToast(name + ' added to your order');
+      const q = qtyOf(id);
+      showToast(name + ' added' + (q > 1 ? ' — ' + q + ' in your order' : ' to your order'));
     }
     function setQty(id, delta) {
       const row = cart.get(id);
@@ -1281,14 +1310,26 @@
       if (row.qty <= 0) cart.delete(id);
       render();
     }
+
+    // keep every menu/bag button showing its current quantity
+    function syncControls() {
+      controls.forEach(c => {
+        const q = qtyOf(c.id);
+        c.btn.dataset.qty = q;
+        c.btn.textContent = q > 0 ? '✓ ' + q + ' · Add' : c.label;
+      });
+    }
+
     function render() {
       const { count, sum } = totals();
       countEl.textContent = count;
       cartBtn.dataset.empty = String(count === 0);
       totalEl.textContent = money(sum);
       checkout.disabled = count === 0;
+      syncControls();
+      save();
       if (count === 0) {
-        itemsEl.innerHTML = '<div class="cart__empty"><span>☕</span>Your order is empty.<br>Add something from the menu.</div>';
+        itemsEl.innerHTML = '<div class="cart__empty"><span>☕</span>Your order is empty.<br>Tap any menu item to add it.</div>';
         return;
       }
       itemsEl.innerHTML = '';
@@ -1334,7 +1375,7 @@
       showToast(count + ' item' + (count === 1 ? '' : 's') + ' ordered — ready in ~10 min at the bar');
     });
 
-    // Make every menu drink/food item orderable
+    // Make every menu drink/food item orderable — the WHOLE ROW is the tap target
     let uid = 0;
     document.querySelectorAll('.menu__item').forEach(item => {
       const nameEl = item.querySelector('.name');
@@ -1344,21 +1385,32 @@
       const price = parseFloat(priceEl.textContent.replace(/[^0-9.]/g, ''));
       if (!isFinite(price)) return;
       const id = 'm' + (uid++);
-      const btn = document.createElement('button');
+
+      const btn = document.createElement('span'); // visual affordance only (pointer-events:none)
       btn.className = 'add-btn';
-      btn.type = 'button';
+      btn.setAttribute('aria-hidden', 'true');
       btn.textContent = '+ Add';
-      btn.setAttribute('aria-label', 'Add ' + name + ' to your order');
-      btn.addEventListener('click', () => addItem(id, name, price));
       item.appendChild(btn);
+      controls.push({ id, btn, label: '+ Add' });
+
+      item.classList.add('menu__item--order');
+      item.setAttribute('role', 'button');
+      item.tabIndex = 0;
+      item.setAttribute('aria-label', 'Add ' + name + ', ' + money(price) + ', to your order');
+      const add = () => addItem(id, name, price);
+      item.addEventListener('click', add);
+      item.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); add(); }
+      });
     });
 
-    // Retail bags feed the same cart (relabel the existing buttons too)
+    // Retail bags feed the same cart
     document.querySelectorAll('.bag__add').forEach(btn => {
       const article = btn.closest('.bag');
       const price = parseFloat((article.querySelector('.bag__price')?.textContent || '').replace(/[^0-9.]/g, ''));
       const name = btn.dataset.bag + ' · 250g bag';
       const id = 'bag-' + btn.dataset.bag;
+      controls.push({ id, btn, label: btn.textContent.trim() || 'Add to bag' });
       btn.addEventListener('click', () => addItem(id, name, price));
     });
 
@@ -1372,6 +1424,7 @@
       }
     });
 
+    loadSaved();
     render();
 
     // Gallery lightbox
